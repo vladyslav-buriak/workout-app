@@ -1,0 +1,11 @@
+{
+  "name": "workout-app",
+  "version": "1.0.0",
+  "description": "training app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Buriak Vladyslav",
+  "license": "ISC"
+}
