@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import express from "express";
 import morgan from "morgan";
+import {prisma} from "./app/prisma.js";
 
 import authRoutes from "./app/auth/auth.routes.js";
 
@@ -24,4 +25,11 @@ async function main() {
     )
 }
 
-main()
+main().then(async () => {
+    await prisma.$disconnect()
+})
+    .catch(async e => {
+        console.error(e)
+        await prisma.$disconnect()
+        process.exit(1)
+    })
