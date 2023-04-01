@@ -7,18 +7,33 @@ import expressAsyncHandler from "express-async-handler";
 import {prisma} from "../prisma.js";
 import {faker} from '@faker-js/faker';
 import {generateToken} from "./generateToken.js";
-import argon2 from "argon2";
+import {verify, hash} from "argon2";
 import {userField} from "../utils/userUtil.js";
 
 
 export const authUser = expressAsyncHandler(async (req, res) => {
-    const user = await prisma.user.findMany(
-        {
-            where: {password1: 'fegd'}
+        const {password, id, email} = req.body;
+
+        const token = generateToken(id);
+        const user = await prisma.user.findUnique(
+            {
+                where: {email}
+            }
+        )
+
+        const match = await verify(user.password, password);
+
+
+        if (user && match) {
+            res.json({user, token,})
+        } else {
+            res.status(401)
+            throw new Error('email or password dosen t match')
         }
-    )
-    res.json(user)
-})
+
+
+    }
+)
 
 export const registerUser = expressAsyncHandler(async (req, res) => {
     const {email, password, id} = req.body;
@@ -38,7 +53,7 @@ export const registerUser = expressAsyncHandler(async (req, res) => {
 
         data: {
             email,
-            password: await argon2.hash(password),
+            password: await hash(password),
             name: faker.name.fullName(),
         },
 
@@ -46,3 +61,5 @@ export const registerUser = expressAsyncHandler(async (req, res) => {
     })
     res.json({user, token,})
 })
+
+
