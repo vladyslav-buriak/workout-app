@@ -12,14 +12,15 @@ import {userField} from "../utils/userUtil.js";
 
 
 export const authUser = expressAsyncHandler(async (req, res) => {
-        const {password, id, email} = req.body;
+        const {password, email} = req.body;
 
-        const token = generateToken(id);
+
         const user = await prisma.user.findUnique(
             {
                 where: {email}
             }
         )
+    const token = generateToken(user.id);
 
         const match = await verify(user.password, password);
 
@@ -36,7 +37,7 @@ export const authUser = expressAsyncHandler(async (req, res) => {
 )
 
 export const registerUser = expressAsyncHandler(async (req, res) => {
-    const {email, password, id} = req.body;
+    const {email, password, } = req.body;
 
     const isHaveUser = await prisma.user.findUnique({
         where: {
@@ -44,11 +45,12 @@ export const registerUser = expressAsyncHandler(async (req, res) => {
         }
     })
 
+    console.log(email)
     if (isHaveUser) {
         res.status(400)
         throw new Error('User already exists')
     }
-    const token = generateToken(id);
+
     const user = await prisma.user.create({
 
         data: {
@@ -57,8 +59,10 @@ export const registerUser = expressAsyncHandler(async (req, res) => {
             name: faker.name.fullName(),
         },
 
+
         select: userField
     })
+    const token = generateToken(user.id);
     res.json({user, token,})
 })
 
