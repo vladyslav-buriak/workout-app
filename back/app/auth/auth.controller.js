@@ -45,7 +45,6 @@ export const registerUser = expressAsyncHandler(async (req, res) => {
         }
     })
 
-    console.log(email)
     if (isHaveUser) {
         res.status(400)
         throw new Error('User already exists')

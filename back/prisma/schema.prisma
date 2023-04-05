@@ -22,13 +22,23 @@ model User {
 }
 
 
-model Exercises {
+model Workout {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  times:Int
-  chest:String
-  legs:String
-  name:String
+  name String
+  exercises Exercises[]
+}
+
+model Exercises {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  name String
+  times Int
+  iconPath String @map("icon_path")
+  workouts Workout[]
+
 }
