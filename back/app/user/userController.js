@@ -9,17 +9,17 @@ import {userField} from "../utils/userUtil.js";
 
 
 export const getUserProfile = expressAsyncHandler(async (req, res) => {
-  
-        const user = await prisma.user.findUnique(
-            {
+
+    const user = await prisma.user.findUnique(
+        {
                 where: {id: req.user.id},
-                select: userField
-            },
-        )
+            select: userField
+        },
+    )
 
-        res.json(user)
+    res.json(user)
 
-    }
+}
 )
 
 

@@ -4,40 +4,40 @@
 
 
 import expressAsyncHandler from "express-async-handler";
-import {prisma} from "../prisma.js";
-import {faker} from '@faker-js/faker';
-import {generateToken} from "./generateToken.js";
-import {verify, hash} from "argon2";
-import {userField} from "../utils/userUtil.js";
+import { prisma } from "../prisma.js";
+import { faker } from '@faker-js/faker';
+import { generateToken } from "./generateToken.js";
+import { verify, hash } from "argon2";
+import { userField } from "../utils/userUtil.js";
 
 
 export const authUser = expressAsyncHandler(async (req, res) => {
         const {password, email} = req.body;
 
 
-        const user = await prisma.user.findUnique(
-            {
-                where: {email}
-            }
-        )
+    const user = await prisma.user.findUnique(
+        {
+            where: { email }
+        }
+    )
     const token = generateToken(user.id);
 
-        const match = await verify(user.password, password);
+    const match = await verify(user.password, password);
 
 
-        if (user && match) {
-            res.json({user, token,})
-        } else {
-            res.status(401)
-            throw new Error('email or password dosen t match')
-        }
-
-
+    if (user && match) {
+        res.json({ user, token, })
+    } else {
+        res.status(401)
+        throw new Error('email or password dosen t match')
     }
+
+
+}
 )
 
 export const registerUser = expressAsyncHandler(async (req, res) => {
-    const {email, password, } = req.body;
+    const { email, password, } = req.body;
 
     const isHaveUser = await prisma.user.findUnique({
         where: {
@@ -62,7 +62,7 @@ export const registerUser = expressAsyncHandler(async (req, res) => {
         select: userField
     })
     const token = generateToken(user.id);
-    res.json({user, token,})
+    res.json({ user, token, })
 })
 
 
