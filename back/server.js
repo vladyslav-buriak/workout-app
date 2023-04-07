@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-d
 import express from "express";
 import morgan from "morgan";
 import { prisma } from "./app/prisma.js";
-
+import path from "path";
 import authRoutes from "./app/auth/auth.routes.js";
 import userRoutes from "./app/user/userRoutes.js";
 import exercisesRoutes from "./app/exercises/exercisesRoutes.js";
@@ -17,6 +17,9 @@ async function main() {
     if (process.env.NODE_ENV === 'development') app.use(morgan
         ('dev'))
     app.use(express.json());
+    const __dirname = path.resolve();
+
+    app.use('/uploads' , express.static(path.join(__dirname, '/uploads/')))
     app.use('/api/auth', authRoutes);
     app.use('/api/user', userRoutes);
     app.use('/api/exercises', exercisesRoutes)
