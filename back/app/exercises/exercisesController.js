@@ -23,7 +23,11 @@ export const addExercises = expressAsyncHandler(async (req, res) => {
 
 export const getExercises = expressAsyncHandler(async (req, res) => {
 
-    const exercises = await prisma.exercises.findMany()
+    const exercises = await prisma.exercises.findMany(
+      {  orderBy: {    
+        createdAt: 'desc'  
+    }}
+    )
 
     res.json(exercises)
 
